@@ -1,0 +1,37 @@
+﻿@model Partys.Models.Invitation
+
+@{
+    ViewData["Title"] = "Add Invitation";
+}
+
+<h2 class="mb-4">Add Invitation for @ViewBag.PartyDescription</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <form asp-action="Create">
+            <input type="hidden" asp-for="PartyId" value="@ViewBag.PartyId" />
+
+            <div class="mb-3">
+                <label asp-for="GuestName" class="form-label"></label>
+                <input asp-for="GuestName" class="form-control" />
+                <span asp-validation-for="GuestName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="GuestEmail" class="form-label"></label>
+                <input asp-for="GuestEmail" class="form-control" />
+                <span asp-validation-for="GuestEmail" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Guest</button>
+            <a asp-controller="Parties" asp-action="Details" asp-route-id="@ViewBag.PartyId"
+               class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Partys.Models.Party>
+
+@{
+    ViewData["Title"] = "Party List";
+}
+
+<h1>Party List</h1>
+
+@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New Party</a>
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Location</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Description</td>
+                <td>@item.EventDate</td>
+                <td>@item.Location</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @: |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

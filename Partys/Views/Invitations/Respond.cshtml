@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Invitation Response";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+        <div class="card-body text-center">
+
+            <h2 class="mb-3">Your Response Has Been Recorded</h2>
+
+            <p class="fs-5">
+                You have <strong>@ViewBag.Response</strong> the invitation for:
+            </p>
+
+            <h4 class="text-primary mb-4">
+                @ViewBag.PartyDescription
+            </h4>
+
+            @if (ViewBag.Response == "Accepted")
+            {
+                <div class="alert alert-success">
+                    Thank you! We're excited to have you 🎉
+                </div>
+            }
+            else if (ViewBag.Response == "Declined")
+            {
+                <div class="alert alert-danger">
+                    Sorry you can’t make it. Maybe next time!
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary">
+                    Your response has been saved.
+                </div>
+            }
+
+            <a href="/" class="btn btn-primary mt-3">Return Home</a>
+
+        </div>
+    </div>
+
+</div>

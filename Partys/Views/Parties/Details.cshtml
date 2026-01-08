@@ -1,0 +1,182 @@
+﻿@model Partys.Models.Party
+
+@{
+    ViewData["Title"] = "Party Details";
+
+    var acceptedCount = Model.Invitations.Count(i => i.Status == "Accepted");
+    var declinedCount = Model.Invitations.Count(i => i.Status == "Declined");
+    var pendingCount = Model.Invitations.Count(i => i.Status == "Pending");
+    var notSentCount = Model.Invitations.Count(i => !i.IsSent);
+}
+
+<h1 class="mb-4">Party Details</h1>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h4 class="card-title mb-2">@Model.Description</h4>
+        <p class="mb-1"><strong>Event Date:</strong> @Model.EventDate.ToString("MMMM dd, yyyy")</p>
+        <p><strong>Location:</strong> @Model.Location</p>
+    </div>
+</div>
+
+<h3 class="mt-4 mb-3">Response Statistics</h3>
+
+<div class="row text-center mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success shadow-sm">
+            <div class="card-body">
+                <h5>Accepted</h5>
+                <div class="display-6">@acceptedCount</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-danger shadow-sm">
+            <div class="card-body">
+                <h5>Declined</h5>
+                <div class="display-6">@declinedCount</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-secondary shadow-sm">
+            <div class="card-body">
+                <h5>Pending</h5>
+                <div class="display-6">@pendingCount</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning shadow-sm">
+            <div class="card-body">
+                <h5>Not Sent</h5>
+                <div class="display-6">@notSentCount</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-4">Invitations (@Model.Invitations.Count)</h3>
+
+@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <a asp-controller="Invitations"
+       asp-action="Create"
+       asp-route-partyId="@Model.Id"
+       class="btn btn-success mb-3">
+        Add Invitation
+    </a>
+}
+
+<!-- Success & Error Messages -->
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<table class="table table-striped table-bordered shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Guest Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Sent</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Invitations.Any())
+        {
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                    No invitations yet. Add some guests.
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var invitation in Model.Invitations)
+            {
+                <tr>
+                    <td>@invitation.GuestName</td>
+                    <td>@invitation.GuestEmail</td>
+
+                    <td>
+                        @if (invitation.Status == "Accepted")
+                        {
+                            <span class="badge bg-success">@invitation.Status</span>
+                        }
+                        else if (invitation.Status == "Declined")
+                        {
+                            <span class="badge bg-danger">@invitation.Status</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@invitation.Status</span>
+                        }
+                    </td>
+
+                    <td>
+                        @if (invitation.IsSent)
+                        {
+                            <span class="badge bg-info">
+                                Sent (@invitation.SentDate?.ToString("MMM dd"))
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Not Sent</span>
+                        }
+                    </td>
+
+                    <td>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && !invitation.IsSent)
+                        {
+                            <a asp-controller="Invitations"
+                               asp-action="Send"
+                               asp-route-id="@invitation.Id"
+                               class="btn btn-sm btn-primary">
+                                Send Email
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div class="mt-4">
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-warning me-2">
+            Edit Party
+        </a>
+    }
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Delete"
+           asp-route-id="@Model.Id"
+           class="btn btn-danger me-2">
+            Delete Party
+        </a>
+    }
+
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
