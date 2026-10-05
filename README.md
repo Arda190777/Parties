@@ -1,61 +1,51 @@
-# 🎉 Parties
+# Parties
 
-A full-stack web application for managing parties and guest invitations,
-built with ASP.NET Core MVC and Entity Framework Core.
+**Party planning and guest invitations with ASP.NET Core MVC.**
 
-## ✨ Features
+A C# web application demonstrating server-rendered MVC, ASP.NET Identity, relational persistence and guest-response workflows.
 
-- 🔐 Role-based authentication with ASP.NET Identity (Organiser / Guest)
-- 📋 Full CRUD operations for parties and invitations
-- 👥 Guest list management with RSVP tracking
-- 🛡️ Server-side input validation and exception handling
-- 🧪 Unit tests with xUnit
-- 🗄️ Code-First database schema with EF Core migrations
+## Features
 
-## 🛠️ Tech Stack
+- Party creation, editing, detail views and administrator-restricted deletion.
+- Invitation management and guest responses.
+- Account authentication and role-restricted actions with ASP.NET Identity.
+- Razor views, model validation and EF Core migrations.
+- xUnit controller tests in a separate test project.
 
-| Layer | Technology |
-|---|---|
-| Framework | ASP.NET Core MVC |
-| ORM | Entity Framework Core |
-| Database | SQLite |
-| Authentication | ASP.NET Identity |
-| Language | C# |
-| Frontend | Razor Views · HTML · CSS · JavaScript |
-| Testing | xUnit |
+**Stack:** .NET 8 · C# · ASP.NET Core MVC · Razor · Entity Framework Core · SQLite · ASP.NET Identity · xUnit
 
-## 🚀 Getting Started
+## Run locally
 
-### Prerequisites
-- .NET 8 SDK
-- Visual Studio 2022 or VS Code
+Install the .NET 8 SDK and the EF Core 8 CLI tool if it is not already available.
 
-### Installation
-
-```bash
+```powershell
 git clone https://github.com/Arda190777/Parties.git
 cd Parties
-dotnet restore
-dotnet ef database update
-dotnet run
+dotnet restore Partys.sln
+dotnet tool install --global dotnet-ef --version 8.0.0
+dotnet ef database update --project Partys/Partys.csproj --startup-project Partys/Partys.csproj
+dotnet run --project Partys/Partys.csproj --launch-profile https
 ```
 
-Then open your browser at `https://localhost:5001`
+Use the URL printed by ASP.NET; the HTTPS launch profile currently uses https://localhost:7169. Check the development database connection in `Partys/appsettings.json` before applying migrations.
 
-## 🧪 Running Tests
+## Verify
 
-```bash
-cd Partys.Tests
-dotnet test
+```powershell
+dotnet build Partys.sln
+dotnet test Partys.sln
 ```
 
-## 📁 Project Structure
-Partys/
-├── Controllers/
-├── Models/
-├── Views/
-├── Services/
-├── Data/
-└── wwwroot/
-Partys.Tests/
-└── (xUnit test files)
+## Code map
+
+```text
+Partys/Controllers/     Party, invitation and home routes
+Partys/Models/          Entities and input/view models
+Partys/Views/           Razor UI
+Partys/Data/            EF Core context and Identity setup
+Partys/Migrations/      Database schema history
+Partys/Services/        Invitation email abstraction
+Partys.Tests/           xUnit controller tests
+```
+
+The current email service logs invitation messages and links; it does not send email through a provider. Seeded accounts are development conveniences and require review before any deployment. This repository is a portfolio/learning project, with no standalone license file currently included.
